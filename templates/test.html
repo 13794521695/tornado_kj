@@ -1,0 +1,112 @@
+<title>Tornado WebSockets</title>
+
+<link rel="stylesheet" href="/static/uikit-2.22.0/css/uikit.min.css" />
+<link rel="stylesheet" href="/static/uikit-2.22.0/css/components/progress.gradient.css"/>
+<link rel="stylesheet" href="/static/css/radialindicator.css"/>
+<script src="/static/js/jquery-1.11.2.js"></script>
+<script src="/static/js/radialIndicator.min.js"></script>
+<script src="/static/uikit-2.22.0/js/uikit.js"></script>
+<script src="/static/uikit-2.22.0/js/components/sticky.min.js"></script>
+
+
+
+
+<div id="procPer"></div>
+<br>
+<textarea id="logoutput" cols="100" rows="30" placeholder="日志输出" style="background:#000; color:#FFF" >...</textarea>
+<br>
+<a href="javascript:void(0);" onClick="wsFunc('stop', 'DEMO')"><span id="actionSpn"  class="uk-button">停止刷新</span></a>
+<script>
+
+function GetRequest() {
+       var url = location.search;
+       var theRequest = new Object();
+       if (url.indexOf("?") != -1) {
+          var str = url.substr(1);
+          strs = str.split("&");
+          for(var i = 0; i < strs.length; i ++) {
+             theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+          }
+       }
+       return theRequest;
+    }
+var Request = new Object();
+Request = GetRequest();
+console.log(Request);
+var dev_version = Request['dev_version'];
+console.log(dev_version);
+
+wsFunc("refresh", dev_version);
+
+function wsFunc(msg, dev_version) {
+        var messageContainer = document.getElementById("logoutput");
+        var percentContainer = document.getElementById("procPer");
+
+
+        if ("WebSocket" in window) {
+            var ws = new WebSocket("ws://localhost:8888/ws");
+            ws.onopen = function() {};
+            ws.onmessage = function (evt) {
+                messageContainer.innerHTML += evt.data;
+                var d = messageContainer.scrollHeight;
+                messageContainer.scrollTop = d;
+                var pattern = /progress/gi;
+                var ans = messageContainer.innerHTML.match(/\w+.\w+,\sdeploy\sprogress\s\d+/g);
+                var dic = new Array();
+                for (item in ans){
+                    dic_key = ans[item].split(',')[0];
+                    dic_value = ans[item].split(',')[1].split(" ")[3];
+                    dic[dic_key] = dic_value;
+                }
+                for (key in dic) {
+                    if(document.getElementById(key + "label") == undefined){
+                        var span=document.createElement('span');
+                        span.setAttribute("id", key + "label");
+                        percentContainer.appendChild(span);
+                        document.getElementById(key + "label").innerHTML = key
+                    }
+                    if(document.getElementById(key) == undefined){
+                        var span=document.createElement('span');
+                        span.setAttribute("id", key);
+                        percentContainer.appendChild(span);
+                        //document.getElementById(key).innerHTML =dic[key];
+                        $(span).radialIndicator({
+                                barColor: {
+                                    10: '#0000FF',
+                                    70: '#0000FF',
+                                    90: '#0000FF',
+                                    100: '#33CC33'
+                                },
+                                radius: 25,
+                                barWidth: 3,
+                                initValue: dic[key],
+                                roundCorner : true,
+                                percentage: true
+                    });
+                        radialObj =$(span).data('radialIndicator');
+
+                    }
+                    radialObj.animate(dic[key]);
+
+
+                    console.log(key, dic[key]);
+                }
+
+            };
+            ws.onclose = function() {};
+            console.log(msg);
+            if (msg == "refresh") {
+                sh=setInterval(function(){
+                ws.send(msg+"-"+dev_version, function(){})}
+                ,2000);
+
+            } else {
+                clearInterval(sh);
+                document.getElementById("actionSpn").innerText = 'OutPut';
+            }
+        } else {
+            messageContainer.innerHTML += "此浏览器不支持websocket！";
+        }
+      }
+
+</script>

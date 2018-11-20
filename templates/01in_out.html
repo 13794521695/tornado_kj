@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tornado</title>
+</head>
+<body>
+
+hello  budong
+
+<form method="post" action="/login?next={{ nextname }}">
+    {% module xsrf_form_html() %}   <!-- 添加这行代码即可 -->
+    <p>用户名<br><input type="text" name="name"></p>
+    <p>密码<br><input type="password" name="password"></p>
+    <input type="submit">
+</form>
+
+
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+
+
+    {% if username%}
+        欢迎用户 {{ username[0].username }} 登录
+        <br>
+        <img src="/static/images/c.jpg" width="250" height="250" >
+        <br>
+    {% else %}
+        您还没有登录
+    {% end %}
+
+
+</body>
+</html>

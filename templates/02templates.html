@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{# autoescape None #}  {#取消转义#}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Templates</title>
+</head>
+<body>
+
+欢迎{{ username }}登录
+ <br>
+{{ 1 + 1 }}
+<br>
+{{ time.time() }}
+<br>
+{% if 1 %}
+    this is if
+{% end %}
+<br>
+{# time.time() #}}
+<br>
+{{! 1 + 1}}
+<br>
+{% if username != 'no' %}
+    欢迎{{ username }}登录
+{% else %}
+    请登录
+{% end %}
+<br>
+<br>
+{#! time.time() #}  {# 这是注释方法  #}
+<br>
+{% for url in urllist %}
+    {{ url }}<br>            {# 加上感叹号 ！是转义，即可以原样输出  #}
+    <a href="{{ url[0] }}" target="_blank">{{ url[1] }}</a> <br>
+{% end %}
+<br>
+{% set a = 0 %}  {# 这是设置变量#}
+
+{% while a<5 %}
+    {{ a }} <br>
+    {% set a += 1 %}
+{% end %}
+<br>
+{{ atga }}
+<br>
+{% raw atga %}   {# raw  局部取消转义，可以正确解析html代码#}
+<br>
+&lt;
+<br>
+{{ escape(atga) }} {#让它转义#}
+<br>
+<br>
+{% if username != 'no' %}
+    欢迎{{ username }}登录
+    <img src="{{ static_url('images/c.jpg') }}" width="250" height="250">   {#静态文件的引用#}
+    <img src="static/images/c.jpg" width="250" height="250"> {#tornado static可以看出一个关键字，会自动替换#}
+{% else %}
+    请登录
+{% end %}
+<br>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% extends ./03base.html %}
+
+{% block title %}Extend{% end %}
+
+{% block body %}
+    {% if username!='no' %}
+        欢迎用户 {{ username }} 登录
+        <br>
+        <img src="/static/images/c.jpg" width="250" height="250" >
+        <br>
+    {% else %}
+        您还没有登录
+    {% end %}
+
+{% include ./05include.html %}
+<br>
+{{ haha() }}
+<br>
+{{ cal() }}
+<br>
+{{ cal().sum(3, 4) }}
+<br>
+{% import time %}
+{{ time.time() }}
+<br>
+{% from util.mod_file import add, upper, Calculation %}
+{{ add(5, 6)}}
+<br>
+{% module  Test() %}
+<br>
+{% module Advertisement() %}
+<br>
+{% module UiModule() %}
+<br>
+{{ methods1() }}
+<br>
+{% apply upper %}
+    hello world<br>
+    hahaha
+{% end %}
+<br>
+{{ upper('hahaha') }}
+<br>
+{{ linkify('百度: http://www.baidu.com') }}
+<br>
+{%raw linkify('百度: http://www.baidu.com') %}
+<br>
+
+{% end %}
+
